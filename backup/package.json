@@ -1,0 +1,22 @@
+{
+  "name": "go-berkah-resto",
+  "version": "1.0.0",
+  "description": "Go berkah resto",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Atma1/go-berkah-resto.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Atma1/go-berkah-resto/issues"
+  },
+  "homepage": "https://github.com/Atma1/go-berkah-resto#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
+  }
+}
