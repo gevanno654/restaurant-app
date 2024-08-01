@@ -4,21 +4,25 @@ include('../config/db.php');
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['order_code'])) {
     $order_code = $_POST['order_code'];
 
-    $sql = "SELECT order_id FROM orders WHERE order_code = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $order_code);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
+    // Mengambil order_id dari tabel orders
+    $sql_order = "SELECT order_id FROM orders WHERE order_code = ?";
+    $stmt_order = $conn->prepare($sql_order);
+    if ($stmt_order) {
+        $stmt_order->bind_param("s", $order_code);
+        $stmt_order->execute();
+        $stmt_order->bind_result($order_id);
+        $stmt_order->fetch();
+        $stmt_order->close();
 
-    if ($row) {
-        echo $row['order_id'];
+        if ($order_id) {
+            echo json_encode(['order_id' => $order_id]);
+        } else {
+            echo json_encode(['error' => 'Order ID tidak ditemukan.']);
+        }
     } else {
-        echo "Order ID not found";
+        echo json_encode(['error' => 'Terjadi kesalahan saat memproses permintaan.']);
     }
-
-    $stmt->close();
 } else {
-    echo "Invalid request";
+    echo json_encode(['error' => 'Kode pesanan tidak valid.']);
 }
 ?>
