@@ -9,19 +9,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['order_code'])) {
     $stmt_order = $conn->prepare($sql_order);
     $stmt_order->bind_param("s", $order_code);
     $stmt_order->execute();
-    $result_order = $stmt_order->get_result();
+    $stmt_order->bind_result($order_date);
+    $stmt_order->fetch();
     $stmt_order->close();
 
-    $order_date = '';
+    $order_date_formatted = '';
     $order_time = '';
-    if ($result_order->num_rows > 0) {
-        $row_order = $result_order->fetch_assoc();
-        $order_date = date('d-m-Y', strtotime($row_order['order_date']));
-        $order_time = date('H:i', strtotime($row_order['order_date']));
+    if ($order_date) {
+        $order_date_formatted = date('d-m-Y', strtotime($order_date));
+        $order_time = date('H:i', strtotime($order_date));
     }
 
     // Mengambil detail pesanan dari tabel order_details
-    $sql_details = "SELECT * FROM order_details WHERE order_code = (SELECT order_code FROM orders WHERE order_code = ?)";
+    $sql_details = "SELECT * FROM order_details WHERE order_code = ?";
     $stmt_details = $conn->prepare($sql_details);
     $stmt_details->bind_param("s", $order_code);
     $stmt_details->execute();
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['order_code'])) {
 
     $total_harga = 0;
     if ($result_details->num_rows > 0) {
-        echo '<p style="text-align: center; font-size: 20px; margin-bottom: 1%;">Tanggal Pesanan: ' . htmlspecialchars($order_date) . ' Pukul: ' . htmlspecialchars($order_time) . '</p>';
+        echo '<p style="text-align: center; font-size: 20px; margin-bottom: 1%;">Tanggal Pesanan: ' . htmlspecialchars($order_date_formatted) . ' Pukul: ' . htmlspecialchars($order_time) . '</p>';
         echo '<table class="table">';
         echo '<thead><tr><th>Nama Menu</th><th class="text-center">Jumlah</th><th class="text-center">Harga</th><th class="text-center">Total</th></tr></thead>';
         echo '<tbody>';
